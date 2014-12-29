@@ -1,0 +1,4 @@
+W3Schools.com
+http://getbootstrap.com/css/
+www.smushit.com/
+http://www.gzip.org/
