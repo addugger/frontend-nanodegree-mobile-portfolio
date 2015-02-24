@@ -450,10 +450,12 @@ var resizePizzas = function(size) {
 
   // Iterates through pizza elements on the page and changes their widths
   function changePizzaSizes(size) {
-    for (var i = 0; i < document.querySelectorAll(".randomPizzaContainer").length; i++) {
-      var dx = determineDx(document.querySelectorAll(".randomPizzaContainer")[i], size);
-      var newwidth = (document.querySelectorAll(".randomPizzaContainer")[i].offsetWidth + dx) + 'px';
-      document.querySelectorAll(".randomPizzaContainer")[i].style.width = newwidth;
+	//Added by Aaron Dugger to precalculate new width for pizzas
+	var pizzasSelector = document.querySelectorAll(".randomPizzaContainer");
+	var dx = determineDx(pizzasSelector[0], size);
+	var newwidth = pizzasSelector[0].offsetWidth + dx + 'px';
+    for (var i = 0; i < pizzasSelector.length; i++) {
+      pizzasSelector[i].style.width = newwidth;
     }
   }
 
@@ -501,11 +503,17 @@ function logAverageFrame(times) {   // times is the array of User Timing measure
 function updatePositions() {
   frame++;
   window.performance.mark("mark_start_frame");
+  
+  //Added by Aaron Dugger to pre-calculate sin values to move background pizzas
+  var phases = [];
+  var scrollTop = document.body.scrollTop;
+  for (var pInt = 0; pInt < 5; pInt++) {
+  	phases.push(100 * Math.sin((scrollTop / 1250) + pInt));
+  }
 
   var items = document.querySelectorAll('.mover');
   for (var i = 0; i < items.length; i++) {
-    var phase = Math.sin((document.body.scrollTop / 1250) + (i % 5));
-    items[i].style.left = items[i].basicLeft + 100 * phase + 'px';
+    items[i].style.left = items[i].basicLeft + phases[i % 5] + 'px';
   }
 
   // User Timing API to the rescue again. Seriously, it's worth learning.
